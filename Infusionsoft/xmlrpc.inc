@@ -1,4 +1,19 @@
 <?php
+
+if (!function_exists('each_72')) {
+    function each_72(&$arr) {
+        $key = key($arr);
+        $result = ($key === null) ? false : [$key, current($arr), 'key' => $key, 'value' => current($arr)];
+        next($arr);
+        return $result;
+    }
+}
+if (!function_exists('count_72')) {
+    function count_72($string) {
+        return strlen($string);
+    }
+}
+
 // by Edd Dumbill (C) 1999-2002
 // <edd@usefulinc.com>
 
@@ -2659,7 +2674,7 @@ class xmlrpcmsg
 
 
         // first error check: xml not well formed
-        if(!xml_parse($parser, $data, count($data)))
+        if(!xml_parse($parser, $data, count_72($data)))
         {
             try{
                 $bad_return = fopen("bad_return.xml.php", "w");
@@ -2950,7 +2965,7 @@ class xmlrpcval
             echo "$key => $val<br />";
             if($key == 'array')
             {
-                while(list($key2, $val2) = each($val))
+                while(list($key2, $val2) = each_72($val))
                 {
                     echo "-- $key2 => $val2<br />";
                 }
@@ -3097,7 +3112,7 @@ class xmlrpcval
         //if (is_object($o) && (get_class($o) == 'xmlrpcval' || is_subclass_of($o, 'xmlrpcval')))
         //{
         reset($this->me);
-        list($typ, $val) = each($this->me);
+        list($typ, $val) = each_72($this->me);
         return '<value>' . $this->serializedata($typ, $val, $charset_encoding) . "</value>\n";
         //}
     }
@@ -3110,7 +3125,7 @@ class xmlrpcval
         //{
         $ar=$o->me;
         reset($ar);
-        list($typ, $val) = each($ar);
+        list($typ, $val) = each_72($ar);
         return '<value>' . $this->serializedata($typ, $val) . "</value>\n";
         //}
     }
@@ -3155,7 +3170,7 @@ class xmlrpcval
      */
     function structeach()
     {
-        return each($this->me['struct']);
+        return each_72($this->me['struct']);
     }
 
     // DEPRECATED! this code looks like it is very fragile and has not been fixed
@@ -3353,7 +3368,7 @@ function php_xmlrpc_decode($xmlrpc_val, $options=array())
             if (in_array('extension_api', $options))
             {
                 reset($xmlrpc_val->me);
-                list($typ,$val) = each($xmlrpc_val->me);
+                list($typ,$val) = each_72($xmlrpc_val->me);
                 switch ($typ)
                 {
                     case 'dateTime.iso8601':
@@ -3530,7 +3545,7 @@ function php_xmlrpc_encode($php_val, $options=array())
             {
                 $arr = array();
                 reset($php_val);
-                while(list($k,$v) = each($php_val))
+                while(list($k,$v) = each_72($php_val))
                 {
                     $arr[$k] = php_xmlrpc_encode($v, $options);
                 }
